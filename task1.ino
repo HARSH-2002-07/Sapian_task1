@@ -63,7 +63,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(hallPins[2]), wheel2ISR, FALLING);
   attachInterrupt(digitalPinToInterrupt(hallPins[3]), wheel3ISR, FALLING);
 
-  Serial.println("Interrupt-driven odometry with Kalman filter");
+  Serial.println("Interrupt-driven odometry with Kalman filter (50Hz)");
 }
 
 // ==================== LOOP ====================
@@ -71,7 +71,7 @@ void loop() {
   static uint32_t lastUpdate = 0;
   uint32_t now = millis();
 
-  if (now - lastUpdate >= 100) { // 10 Hz update
+  if (now - lastUpdate >= 20) { // 20ms = 50Hz
     float dt = (now - lastUpdate) / 1000.0; // seconds
     lastUpdate = now;
 
@@ -82,7 +82,7 @@ void loop() {
     // Save counts
     for (int i = 0; i < 4; i++) lastCount[i] = wheelCount[i];
 
-    // Update odometry
+    // Odometry update
     float d = (dLeft + dRight) / 2.0;
     float dTheta = (dRight - dLeft) / wheelBase;
 
